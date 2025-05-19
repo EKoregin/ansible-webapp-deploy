@@ -1,0 +1,41 @@
+- name: Install Python dependencies
+  apt:
+    name:
+      - python3-flask
+      - python3-psycopg2
+      - python3-yaml
+    state: present
+
+- name: Clone application repository
+  git:
+    repo: https://github.com/EKoregin/flask-app.git
+    dest: /opt/flask-app
+    version: main
+
+- name: Copy application config
+  template:
+    src: app_config.yml.j2
+    dest: /opt/flask-app/config.yml
+
+- name: Create systemd service for Flask app
+  copy:
+    content: |
+      [ Unit ]
+      Description=Flask Application
+      After=network.target
+    
+      [Service]
+      User=www-data
+      WorkingDirectory=/opt/flask-app
+      ExecStart=/usr/bin/python3 /opt/flask-app/app.py
+      Restart=always
+    
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/flask-app.service
+
+- name: Enable and start Flask app
+  service:
+    name: flask-app
+    state: restarted
+    enabled: yes

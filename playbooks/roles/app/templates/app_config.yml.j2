@@ -1,0 +1,5 @@
+database:
+  host: {{ db_host | default('localhost') }}
+  name: flask_db
+  user: flask_user
+  password: "{{ db_password }}"

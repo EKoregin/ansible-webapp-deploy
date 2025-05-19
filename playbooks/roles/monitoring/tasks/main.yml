@@ -1,0 +1,55 @@
+- name: Install Prometheus
+  apt:
+    name: prometheus
+    state: present
+
+- name: Install required Grafana dependencies
+  apt:
+    name:
+      - apt-transport-https
+      - software-properties-common
+      - wget
+      - musl
+    state: present
+    update_cache: yes
+
+# Секция установки Grafana заблокирована, потому что доступ из России запрещен
+# Можно установить ее вручную: https://grafana.com/grafana/download.
+#- name: Create keyring directory for Grafana
+#  file:
+#    path: /etc/apt/keyrings
+#    state: directory
+#    mode: '0755'
+#
+#- name: Copy Grafana GPG key from local file
+#  copy:
+#    src: grafana.gpg
+#    dest: /etc/apt/keyrings/grafana.gpg
+#    mode: '0644'
+#
+#- name: Add Grafana APT repository
+#  lineinfile:
+#    path: /etc/apt/sources.list.d/grafana.list
+#    line: "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main"
+#    create: yes
+#
+#- name: Update apt cache
+#  apt:
+#    update_cache: yes
+#
+#- name: Install Grafana
+#  apt:
+#    name: grafana
+#    state: present
+
+- name: Ensure Prometheus is running
+  service:
+    name: prometheus
+    state: started
+    enabled: yes
+
+- name: Ensure Grafana is running
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes

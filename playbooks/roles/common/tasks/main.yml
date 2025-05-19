@@ -1,0 +1,13 @@
+- name: Update apt cache
+  apt:
+   update_cache: yes
+
+- name: Install essential packages
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - net-tools
+      - git
+    state: present
+
